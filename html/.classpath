@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/gdx-1.9.4.jar" sourcepath="libs/gdx-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-1.9.4-sources.jar" sourcepath="libs/gdx-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-gwt-1.9.4-sources.jar" sourcepath="libs/gdx-backend-gwt-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-gwt-1.9.4.jar" sourcepath="libs/gdx-backend-gwt-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-box2d-1.9.4.jar" sourcepath="libs/gdx-box2d-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-box2d-1.9.4-sources.jar" sourcepath="libs/gdx-box2d-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-box2d-gwt-1.9.4-sources.jar" sourcepath="libs/gdx-box2d-gwt-1.9.4-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gwt-codeserver-2.6.0.jar" sourcepath="libs/gwt-codeserver-2.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gwt-servlet-2.6.0.jar" sourcepath="libs/gwt-servlet-2.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gwt-user-2.6.1.jar" sourcepath="libs/gwt-user-2.6.1-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NisiraLibGDX-core"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

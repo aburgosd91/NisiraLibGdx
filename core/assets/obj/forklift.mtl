@@ -1,0 +1,27 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.833
+# XDimension Software, LLC
+# http://www.xdsoft.com/explorer/
+# 
+newmtl forklift_bmp
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 2
+	 Ns 8
+	 map_Kd forklift0.bmp
+newmtl forklift1_bmp
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 2
+	 Ns 8
+	 map_Kd forklift1.bmp
+newmtl forklift2_bmp
+	 Ka 0.117647 0.117647 0.117647
+	 Kd 0.752941 0.752941 0.752941
+	 Ks 0.752941 0.752941 0.752941
+	 illum 2
+	 Ns 8
+	 map_Kd forklift2.bmp
