@@ -84,7 +84,8 @@ public class Streetview  implements Screen,InputProcessor{
 		spritebatch = new SpriteBatch();
 		font = new BitmapFont();
 	    cache = new ModelCache();
-		is2D= false;
+		is2D= true;
+		is3D= false;
 		isworldchange=false;
 		iscarmoving=false;
 		isparpadeando_ruta = false;
@@ -302,7 +303,7 @@ public class Streetview  implements Screen,InputProcessor{
 				camera.position.add(tmp);
 	     }
 	     
-	     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+	     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 	    	 //3D
 	    	 camera = new PerspectiveCamera(
 	  	           75,
@@ -320,9 +321,11 @@ public class Streetview  implements Screen,InputProcessor{
 //	        camera.lookAt(position.x,position.y,positiodn.z);
 	        camera.near = 0.1f;
 		    camera.far = 300.0f;
-	        is2D=false;
+		    is2D=false;
+			 if(is3D) is3D=false;
+			 else is3D=true; 
 	     }
-	     if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+	     if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
 	    	 //2D
 	    	 camera = new PerspectiveCamera(
 		  	           75,
@@ -331,12 +334,12 @@ public class Streetview  implements Screen,InputProcessor{
 
 		     camera.position.set(position.x,11f,position.z);
 		     camera.lookAt(position.x,0,position.z);
+		     
 		     camera.near = 0.1f;
 			 camera.far = 300.0f;
-			 if(is2D)
-		     is2D=false;
-			 else
-				 is2D=true; 
+			 is3D = false;
+			 if(is2D) is2D=false;
+			 else is2D=true; 
 	     }
 
 	  }
@@ -406,14 +409,33 @@ public class Streetview  implements Screen,InputProcessor{
 			  	           Gdx.graphics.getWidth(),
 			  	           Gdx.graphics.getHeight());
 
-			     camera.position.set(position.x,11f,position.z);
-			     camera.lookAt(position.x,0,position.z);
-			     camera.near = 0.1f;
-				 camera.far = 300.0f;
+	 			camera.position.set(position.x,11f,position.z);
+	 			camera.lookAt(position.x,0,position.z);
+			    camera.near = 0.1f;
+				camera.far = 300.0f;
 
 		     }else{
 		    	 
 		     }
+	     }
+	     if(is3D){
+	    	 Vector3 position = null;
+		 		if(loading == false){
+		 			position = patoInstance.transform.getTranslation(new Vector3());
+		 			 camera = new PerspectiveCamera(
+		 		  	           75,
+		 		  	           Gdx.graphics.getWidth(),
+		 		  	           Gdx.graphics.getHeight());
+
+				     camera.position.set(position.x,position.y+2,position.z);
+			    	 camera.rotate(patoInstance.transform.getRotation(new Quaternion()));
+			    	 camera.rotate(Vector3.Y, -90);
+			    	 tmp.set(camera.direction).nor().scl(-6f);
+					 camera.position.add(tmp);
+				     camera.lookAt(position.x,0,position.z);
+				     camera.near = 0.1f;
+					 camera.far = 300.0f;
+		 		}
 	     }
 
 	     if(iscarmoving){
