@@ -1,12 +1,14 @@
 package com.nisira.libgdx.screens;
 
 import java.util.ArrayList;
-
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-
+import java.util.Queue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -68,6 +70,7 @@ public class Streetview  implements Screen,InputProcessor{
 	  private Observer observer_parpadeo;
 	  private float[][] D;
 	  private int[][] S;
+	  private Queue<Zelda> queue_posactual; 
 	/*** FLAGS ***/
 	  private boolean is2D;
 	  private boolean is3D;
@@ -75,6 +78,7 @@ public class Streetview  implements Screen,InputProcessor{
 	  private boolean iscarmoving;
 	  private boolean isparpadeando_ruta;
 	  private int cont_parpadear;
+	  private boolean isinvisible;
 	/*** VARIABLES DE TIEMPO ***/
 	  private float delta_parpadeo;
 	  
@@ -91,6 +95,8 @@ public class Streetview  implements Screen,InputProcessor{
 		isparpadeando_ruta = false;
 		cont_parpadear=1;
 		celdas_pintadas = new ArrayList<Zelda>();
+		queue_posactual = new LinkedList();
+		isinvisible=false;
 		
 		/******************* OBSERVERS ***********************/
 		
@@ -103,6 +109,16 @@ public class Streetview  implements Screen,InputProcessor{
 				//patoInstance.transform.setTranslation(2.5f*(float)((Zelda) arg).X ,2f,2.5f*(float)((Zelda) arg).Y);
 				pintar((Zelda)arg);//COMENTAR ESTO CUANDO SE USE PINTADO DE RUTAS
 				zelda_actual = (Zelda)arg;
+				//SE UTILIZA UNA COLA PARA QUE EL AUTO AVANCE POR TODAS LAS POSICIONES 
+				//ENCONTRADAS EN CASO VAYA MUY RAPIDO. EVITA SALTOS.}
+				queue_posactual.add(new Zelda(zelda_actual.X, 
+						zelda_actual.Y, 
+						zelda_actual.n_piso, 
+						zelda_actual.color, 
+						zelda_actual.tipo, zelda_actual.idUbicacion));
+				System.out.println(""+zelda_actual.X + " "+ zelda_actual.Y);
+				System.out.println(""+queue_posactual.peek().X +" "+ queue_posactual.peek().Y);
+				
 				isworldchange=true;
 				iscarmoving = true;
 				Vector3 position = patoInstance.transform.getTranslation(new Vector3());
@@ -112,10 +128,7 @@ public class Streetview  implements Screen,InputProcessor{
 		    		if(angle < 0)
 		            {
 		                angle = 360 - (-angle);
-		            }
-		    		
-//		    	observable_Pato.actualizar(((Zelda)arg).X, ((Zelda)arg).Y);
-		    		
+		            }		    		
 			}
 		};
 		observable_pos_actual.addObserver(observer_pos_actual);
@@ -165,14 +178,14 @@ public class Streetview  implements Screen,InputProcessor{
 	     
 	     //AQUI COMIENZA EL LLENADO EN EL MUNDO 3D
 	     generadorMapa = new GeneradorMapa(zelda);
-//	     mapa = new GeneradorMapa(zelda);
+	     //mapa = new GeneradorMapa(zelda);
 	     
 	     //AÑADIMOS LIST INSTANCIAS AL CACHE PARA QUE RENDERIZAR DE FORMA OPTIMA
 	     cache.begin();
 	     cache.add(generadorMapa.list_minstance);
 	     cache.end();
 	     
-	     //AQUI SE AGREGAN LAS LUCES EN EL ENVIROMENT (AMBIENTE EN INGLES)
+	     //AQUI SE AGREGAN LAS LUCES EN EL ENVIROMENT (AMBIENTE)
 	     environment = new Environment();
 	     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 255f, 255f, 255f, 1f));
 	     environment.add(new DirectionalLight().set(255f, 255f, 255f, -2f, -0.8f, -0.2f));
@@ -241,6 +254,7 @@ public class Streetview  implements Screen,InputProcessor{
 		
 		celdas_pintadas.clear();
 	}
+	
 	public void ParpadearRutas(int cont){
 		isworldchange=true;
 		ColorAttribute attribute=null;
@@ -355,35 +369,50 @@ public class Streetview  implements Screen,InputProcessor{
 
 	public void mover_Pato(float delta){
 		
+		if(queue_posactual.isEmpty()){
+			iscarmoving= false;
+			return;
+		}
 		Vector3 position = patoInstance.transform.getTranslation(new Vector3());
-		float angle =  (float)Math.toDegrees(Math.atan2(zelda_actual.Y*2.5f - position.z, zelda_actual.X *2.5f - position.x));
+		float angle =  (float)Math.toDegrees(Math.atan2(queue_posactual.peek().Y*2.5f - position.z, queue_posactual.peek().X *2.5f - position.x));
 		angle=-angle ;
    		if(angle < 0)
            {
                angle += 360;// - (-angle);
            }
-   		
+   		//CUANDO ESTA LEJOS, REPOSISIONAR.
+   		double distancia = Math.sqrt(Math.pow(position.x-queue_posactual.peek().X*2.5f,2)+Math.pow(position.z-queue_posactual.peek().Y*2.5f,2));
+   		System.out.println("DISTANCIA: "+distancia);
+   		if(distancia>5){
+   			isinvisible=true;
+   			delta*=50;
+   		}else isinvisible = false;
    		patoInstance.transform.setToRotation(Vector3.Y,0f);
 	   	patoInstance.transform.translate(position);
 
-		if(position.x != zelda_actual.X*2.5f){
-			if(position.x > zelda_actual.X*2.5f)
+		if(position.x != queue_posactual.peek().X*2.5f){
+			if(position.x > queue_posactual.peek().X*2.5f)
 				patoInstance.transform.translate(-1f*delta, 0f, 0f);
 			else
 				patoInstance.transform.translate(1f*delta, 0f, 0f);
 		}
-		if(position.z != zelda_actual.Y *2.5f){
+		if(position.z != queue_posactual.peek().Y *2.5f){
 			
-			if(position.z > zelda_actual.Y *2.5f)
+			if(position.z > queue_posactual.peek().Y *2.5f)
 				patoInstance.transform.translate(0f,0f,-1f*delta);
 			else
 				patoInstance.transform.translate(0f,0f,1f*delta);
 		}
-		angulo = angle +"  X: "+ zelda_actual.X + "  Y: "+ zelda_actual.Y+ " XP: "+position.x+" YP: "+position.z;
+		angulo = angle +"  X: "+ queue_posactual.peek().X + "  Y: "+ queue_posactual.peek().Y+ " XP: "+position.x+" YP: "+position.z;
 		patoInstance.transform.rotate(Vector3.Y,angle);
 		
-		if(((int)position.x == (int)(zelda_actual.X*2.5f))&&((int)position.z == (int)(zelda_actual.Y *2.5f))){
-			iscarmoving= false;
+		if(((int)position.x == (int)(queue_posactual.peek().X*2.5f))&&((int)position.z == (int)(queue_posactual.peek().Y *2.5f))){
+			
+			if(!queue_posactual.isEmpty()){
+				System.out.println(""+queue_posactual.peek().X + " " +queue_posactual.peek().Y );
+				System.out.println("POP QUEUE");
+				queue_posactual.poll();
+			}
 		}
 	}
 	
@@ -446,7 +475,7 @@ public class Streetview  implements Screen,InputProcessor{
 	     //se renderiza el mundo
 	     spritebatch.setProjectionMatrix(camera.combined);
 	     modelBatch.begin(camera);
-	     if(!loading){
+	     if(!loading && !isinvisible){
 	    	 modelBatch.render(patoInstance);
 	     }
 	     if(isparpadeando_ruta){
@@ -528,8 +557,8 @@ public class Streetview  implements Screen,InputProcessor{
 		//float deltaY = -Gdx.input.getDeltaY() * 0.5f;
 		if(is2D){
 			//3D	
-//			camera.direction.rotate(camera.up, deltaX);
-//			tmp.set(camera.direction).crs(camera.up).nor();
+			//camera.direction.rotate(camera.up, deltaX);
+			//tmp.set(camera.direction).crs(camera.up).nor();
 		}else if(!is2D){
 			//2D
 			//tmp.set(camera.direction).crs(camera.up).nor();
