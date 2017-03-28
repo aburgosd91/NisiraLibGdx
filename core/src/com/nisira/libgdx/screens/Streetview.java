@@ -12,6 +12,7 @@ import java.util.Queue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -28,15 +29,19 @@ import com.badlogic.gdx.graphics.g3d.ModelCache;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.nisira.libgdx.entities.Zelda;
+import com.nisira.libgdx.scenes.InformacionPantalla;
 import com.nisira.libgdx.tools.Floyd;
 import com.nisira.libgdx.tools.GeneradorMapa;
 import com.nisira.libgdx.tools.Observable_Pato;
+import com.sun.scenario.animation.shared.InfiniteClipEnvelope;
 
 import javafx.util.Pair;
 
@@ -72,8 +77,8 @@ public class Streetview  implements Screen,InputProcessor{
 	  private int[][] S;
 	  private Queue<Zelda> queue_posactual; 
 	/*** FLAGS ***/
-	  private boolean is2D;
-	  private boolean is3D;
+	  public boolean is2D;
+	  public boolean is3D;
 	  private boolean isworldchange;
 	  private boolean iscarmoving;
 	  private boolean isparpadeando_ruta;
@@ -81,6 +86,9 @@ public class Streetview  implements Screen,InputProcessor{
 	  private boolean isinvisible;
 	/*** VARIABLES DE TIEMPO ***/
 	  private float delta_parpadeo;
+	/*** HUD ***/  
+	  private InformacionPantalla info_pantalla;
+	  private ShapeRenderer shapeRenderer;
 	  
 	public Streetview(List<Zelda> zelda, Observable observable_pos_actual,Observable observable_rutas) {
 		// TODO CONSTRUCTOR
@@ -96,6 +104,8 @@ public class Streetview  implements Screen,InputProcessor{
 		cont_parpadear=1;
 		celdas_pintadas = new ArrayList<Zelda>();
 		queue_posactual = new LinkedList();
+	    info_pantalla = new InformacionPantalla(spritebatch,this);
+	    shapeRenderer = new ShapeRenderer();
 		isinvisible=false;
 		
 		/******************* OBSERVERS ***********************/
@@ -191,14 +201,16 @@ public class Streetview  implements Screen,InputProcessor{
 	     environment.add(new DirectionalLight().set(255f, 255f, 255f, -2f, -0.8f, -0.2f));
 	     environment.add(new DirectionalLight().set(255f, 255f, 255f, 2f, 0.8f, -0.2f));
 	     //creamos un procesador de entrada para los eventos
-	     Gdx.input.setInputProcessor(this);
+	     InputMultiplexer inputMultiplexer = new InputMultiplexer();
+	     inputMultiplexer.addProcessor(info_pantalla.stage);
+	     inputMultiplexer.addProcessor(this);
+	     Gdx.input.setInputProcessor(inputMultiplexer);
 	     zelda.clear();
 	     loading = true; 
 	}  
 	  
 	@Override
 	public void show() {
-		
 	}
 	
 	public void pintar(Zelda arg){
@@ -319,41 +331,41 @@ public class Streetview  implements Screen,InputProcessor{
 	     
 	     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 	    	 //3D
-	    	 camera = new PerspectiveCamera(
-	  	           75,
-	  	           Gdx.graphics.getWidth(),
-	  	           Gdx.graphics.getHeight());
-
-	    	camera.position.set(position.x,position.y+2,position.z);
-
-	    	camera.rotate(patoInstance.transform.getRotation(new Quaternion()));
-	    	camera.rotate(Vector3.Y, -90);
-	    	tmp.set(camera.direction).nor().scl(-6f);
-			camera.position.add(tmp);
-//	    	camera.position.z = position.z+2f;
-//	    	System.out.println("rotation "+ patoInstance.transform.getRotation(new Quaternion()));
-//	        camera.lookAt(position.x,position.y,positiodn.z);
-	        camera.near = 0.1f;
-		    camera.far = 300.0f;
-		    is2D=false;
-			 if(is3D) is3D=false;
-			 else is3D=true; 
+//	    	 camera = new PerspectiveCamera(
+//	  	           75,
+//	  	           Gdx.graphics.getWidth(),
+//	  	           Gdx.graphics.getHeight());
+//
+//	    	camera.position.set(position.x,position.y+2,position.z);
+//
+//	    	camera.rotate(patoInstance.transform.getRotation(new Quaternion()));
+//	    	camera.rotate(Vector3.Y, -90);
+//	    	tmp.set(camera.direction).nor().scl(-6f);
+//			camera.position.add(tmp);
+////	    	camera.position.z = position.z+2f;
+////    	System.out.println("rotation "+ patoInstance.transform.getRotation(new Quaternion()));
+////	    camera.lookAt(position.x,position.y,positiodn.z);
+//	        camera.near = 0.1f;
+//		    camera.far = 300.0f;
+//		    is2D=false;
+//			 if(is3D) is3D=false;
+//			 else is3D=true; 
 	     }
 	     if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
 	    	 //2D
-	    	 camera = new PerspectiveCamera(
-		  	           75,
-		  	           Gdx.graphics.getWidth(),
-		  	           Gdx.graphics.getHeight());
-
-		     camera.position.set(position.x,11f,position.z);
-		     camera.lookAt(position.x,0,position.z);
-		     
-		     camera.near = 0.1f;
-			 camera.far = 300.0f;
-			 is3D = false;
-			 if(is2D) is2D=false;
-			 else is2D=true; 
+//	    	 camera = new PerspectiveCamera(
+//		  	           75,
+//		  	           Gdx.graphics.getWidth(),
+//		  	           Gdx.graphics.getHeight());
+//
+//		     camera.position.set(position.x,11f,position.z);
+//		     camera.lookAt(position.x,0,position.z);
+//		     
+//		     camera.near = 0.1f;
+//			 camera.far = 300.0f;
+//			 is3D = false;
+//			 if(is2D) is2D=false;
+//			 else is2D=true; 
 	     }
 
 	  }
@@ -373,6 +385,9 @@ public class Streetview  implements Screen,InputProcessor{
 			iscarmoving= false;
 			return;
 		}
+		info_pantalla.lblmensaje.setText("Informacion: X="+ queue_posactual.peek().X+
+				" Y="+queue_posactual.peek().Y);
+		
 		Vector3 position = patoInstance.transform.getTranslation(new Vector3());
 		float angle =  (float)Math.toDegrees(Math.atan2(queue_posactual.peek().Y*2.5f - position.z, queue_posactual.peek().X *2.5f - position.x));
 		angle=-angle ;
@@ -474,6 +489,8 @@ public class Streetview  implements Screen,InputProcessor{
 	     camera.update();
 	     //se renderiza el mundo
 	     spritebatch.setProjectionMatrix(camera.combined);
+	     spritebatch.setProjectionMatrix(info_pantalla.stage.getCamera().combined);
+	     
 	     modelBatch.begin(camera);
 	     if(!loading && !isinvisible){
 	    	 modelBatch.render(patoInstance);
@@ -502,12 +519,23 @@ public class Streetview  implements Screen,InputProcessor{
 	     spritebatch.begin();
 	     font.setColor(Color.BLACK);
 	     font.draw(spritebatch, angulo,0,0);
+	     shapeRenderer.begin(ShapeType.Filled);
+         shapeRenderer.setColor(Color.CYAN);
+         shapeRenderer.rect(0, 50, 300, 300);
+         shapeRenderer.end();
+	     spritebatch.end();
+	     info_pantalla.stage.act();
+	     info_pantalla.stage.draw();
+	     spritebatch.begin();
+	    
 	     spritebatch.end();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width,height);
+	    camera.update();
+	    info_pantalla.stage.getViewport().setScreenSize(width, height); 
 	}
 
 	@Override
@@ -591,6 +619,7 @@ public class Streetview  implements Screen,InputProcessor{
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		dragX = screenX;
 	    dragY = screenY;
+	    Gdx.app.log("Clicked button","2d "+ is2D + " 3d "+ is3D);
 	    return true;
 	}
 
