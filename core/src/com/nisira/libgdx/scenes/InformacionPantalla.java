@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -20,7 +21,7 @@ import com.nisira.libgdx.screens.Streetview;
 
 public class InformacionPantalla {
 	public Stage stage;
-	private String mensaje,dimension,modo;
+	public String mensaje,dimension,modo;
 	Skin skin;
 	boolean auto;
 	public Label lblmensaje;
@@ -95,13 +96,12 @@ public class InformacionPantalla {
 	         }
 		});
 		lblmensaje = new Label("Informacion:", skin);
-		table.padTop(30);
-		table.add(btn_2d_3d).padBottom(30)
-			.padLeft(30);
-		table.add(btn_auto_manual)
-			.padBottom(30);
+		table.row().expandX();
+		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
+		table.row().expandY();
+		table.add(btn_2d_3d).align(Align.bottomRight).padBottom(10).padRight(10);
 		table.row();
-		table.add(lblmensaje);
+		table.add(btn_auto_manual).align(Align.bottomRight).padBottom(30).padRight(10);
 		stage.addActor(table);
 		Gdx.input.setInputProcessor(stage);
 		Gdx.app.log("CREATED","Yep, you did");

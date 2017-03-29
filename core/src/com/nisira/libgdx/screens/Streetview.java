@@ -520,15 +520,12 @@ public class Streetview  implements Screen,InputProcessor{
 	     font.setColor(Color.BLACK);
 	     font.draw(spritebatch, angulo,0,0);
 	     shapeRenderer.begin(ShapeType.Filled);
-         shapeRenderer.setColor(Color.CYAN);
-         shapeRenderer.rect(0, 50, 300, 300);
+         shapeRenderer.setColor(Color.DARK_GRAY);
+         shapeRenderer.rect(5, 150, 300, 100);
          shapeRenderer.end();
 	     spritebatch.end();
 	     info_pantalla.stage.act();
 	     info_pantalla.stage.draw();
-	     spritebatch.begin();
-	    
-	     spritebatch.end();
 	}
 
 	@Override
@@ -568,6 +565,7 @@ public class Streetview  implements Screen,InputProcessor{
 	    font.dispose();
 	    modelBatch=null;
 	    spritebatch=null;
+	    shapeRenderer.dispose();
 	    try {
 			this.finalize();
 		} catch (Throwable e) {
@@ -636,16 +634,15 @@ public class Streetview  implements Screen,InputProcessor{
 	@Override
 	public boolean scrolled(int amount) {
 		// TODO SCROLL CON RUEDA DE RATON
-		
-//		System.out.println("CAMERA: " + camera.position.y+ " "+ amount);
-		if(is2D){
-			if(!(camera.position.y <= 10 && amount==1)){
-				
+		if(info_pantalla.dimension.equals("2D") && info_pantalla.modo.equals("Manual")){
+			System.out.println("CAMERA: " + camera.position.y+ " "+ amount);
+			if(!(camera.position.y <= 11 && amount==1)){
 				tmp.set(camera.direction).nor().scl(amount * 5);
 				camera.position.add(tmp);
 //				System.out.println("CAMERA: " + camera.position.y);
 			}
-		}else{
+		}
+		if(info_pantalla.dimension.equals("3D") && info_pantalla.modo.equals("Manual")){
 			tmp.set(camera.direction).nor().scl(amount * 5);
 			camera.position.add(tmp);
 		}
