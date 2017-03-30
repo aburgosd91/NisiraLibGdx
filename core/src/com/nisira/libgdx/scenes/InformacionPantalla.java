@@ -1,18 +1,24 @@
 package com.nisira.libgdx.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -27,6 +33,7 @@ public class InformacionPantalla {
 	public Label lblmensaje;
 	TextButton btn_auto_manual;
 	TextButton btn_2d_3d;
+	TextButton arriba,abajo,izq,der;
 	
 	public InformacionPantalla(SpriteBatch batch,final Streetview streetview){
 		mensaje="";
@@ -35,12 +42,24 @@ public class InformacionPantalla {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage(new ScreenViewport(), batch);
 		auto=true;
-		Table table = new Table();
-		table.top();
-		table.left();
-		table.setFillParent(true);
+		
 		btn_2d_3d = new TextButton(dimension,skin);
 		btn_auto_manual = new TextButton(modo, skin);
+		lblmensaje = new Label("Informacion:", skin);
+		Texture myTexture = new Texture(Gdx.files.internal("arrow1.png"));
+		TextureRegion myTextureRegion = new TextureRegion(myTexture);
+		TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+		arriba = new TextButton(" N ",skin);
+		abajo = new TextButton(" S ",skin);
+		izq = new TextButton(" E ",skin);
+		der = new TextButton(" O ",skin);
+		
+		/******************LISTENERS*********************/
+		arriba.addListener(new ClickListener(){
+			@Override
+	         public void clicked(InputEvent event, float x, float y) {}
+		});
+		
 		btn_2d_3d.addListener(new ClickListener(){
 			@Override
 	         public void clicked(InputEvent event, float x, float y) {
@@ -95,14 +114,50 @@ public class InformacionPantalla {
 				}
 	         }
 		});
-		lblmensaje = new Label("Informacion:", skin);
-		table.row().expandX();
-		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
-		table.row().expandY();
-		table.add(btn_2d_3d).align(Align.bottomRight).padBottom(10).padRight(10);
-		table.row();
-		table.add(btn_auto_manual).align(Align.bottomRight).padBottom(30).padRight(10);
+		
+		/******************POSICION*********************/		
+		AsignarPosiciones();
+		
+	}
+	
+	public void AsignarPosiciones(){
+		
+		Table table = new Table();
 		stage.addActor(table);
+		table.top().left().setFillParent(true);
+		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
+		Table table01 = new Table();
+		stage.addActor(table01);
+		table01.top().setFillParent(true);
+		table01.add(arriba).expandX().expandY().align(Align.bottomLeft).padBottom(80).padLeft(30);
+		table01.add(btn_2d_3d).expandX().expandY().align(Align.bottomRight).padBottom(80);
+		Table table02 = new Table();
+		stage.addActor(table02);
+		table02.row();
+		table02.setFillParent(true);
+		table02.add(izq).expandY().align(Align.bottomLeft).padBottom(40);
+		table02.add(der).expandY().align(Align.bottomLeft).padBottom(40);
+		table02.add(btn_auto_manual).expandX().expandY().align(Align.bottomRight).padBottom(40);
+		Table table03 = new Table();
+		stage.addActor(table03);
+		table03.row();
+		table03.setFillParent(true);
+		table03.add(abajo).expandY().align(Align.bottomLeft).padLeft(30);
+		
+
+//		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
+//		table.add(arriba).align(Align.left);
+//		table.add(btn_2d_3d).align(Align.right);
+//		table.row().expandX();
+//		table.add(izq).align(Align.left);
+//		table.add(der).align(Align.left);
+//		table.add(btn_auto_manual).align(Align.right);
+//		table.row();
+//		table.add(abajo);
+//		table.add(table01).expandX().getFillX();
+//		table.row();
+//		table.add(table02);
+		
 		Gdx.input.setInputProcessor(stage);
 		Gdx.app.log("CREATED","Yep, you did");
 	}
