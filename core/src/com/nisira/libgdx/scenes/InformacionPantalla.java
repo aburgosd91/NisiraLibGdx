@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.TouchableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -136,13 +137,13 @@ public class InformacionPantalla {
 		table02.row();
 		table02.setFillParent(true);
 		table02.add(izq).expandY().align(Align.bottomLeft).padBottom(40);
-		table02.add(der).expandY().align(Align.bottomLeft).padBottom(40);
+		table02.add(der).expandY().align(Align.bottomLeft).padBottom(40).padLeft(10);
 		table02.add(btn_auto_manual).expandX().expandY().align(Align.bottomRight).padBottom(40);
 		Table table03 = new Table();
 		stage.addActor(table03);
 		table03.row();
 		table03.setFillParent(true);
-		table03.add(abajo).expandY().align(Align.bottomLeft).padLeft(30);
+		table03.add(abajo).expand().expandY().align(Align.bottomLeft).padLeft(30);
 		
 
 //		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
