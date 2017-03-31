@@ -46,7 +46,7 @@ public class InformacionPantalla {
 		
 		btn_2d_3d = new TextButton(dimension,skin);
 		btn_auto_manual = new TextButton(modo, skin);
-		lblmensaje = new Label("Informacion:", skin);
+		lblmensaje = new Label("Informacion: Recoger materia prima. \n Estas en la posicion 0,0", skin);
 		Texture myTexture = new Texture(Gdx.files.internal("arrow1.png"));
 		TextureRegion myTextureRegion = new TextureRegion(myTexture);
 		TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
@@ -126,7 +126,9 @@ public class InformacionPantalla {
 		Table table = new Table();
 		stage.addActor(table);
 		table.top().left().setFillParent(true);
-		table.add(lblmensaje).align(Align.topLeft).padLeft(10).padTop(10);
+		lblmensaje.setWrap(true);
+		lblmensaje.setWidth(300);
+		table.add(lblmensaje).width(300f).align(Align.topLeft).padLeft(10).padTop(10);
 		Table table01 = new Table();
 		stage.addActor(table01);
 		table01.top().setFillParent(true);
