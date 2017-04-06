@@ -47,9 +47,9 @@ public class InformacionPantalla {
 		btn_2d_3d = new TextButton(dimension,skin);
 		btn_auto_manual = new TextButton(modo, skin);
 		lblmensaje = new Label("Informacion: Recoger materia prima. \n Estas en la posicion 0,0", skin);
-		Texture myTexture = new Texture(Gdx.files.internal("arrow1.png"));
-		TextureRegion myTextureRegion = new TextureRegion(myTexture);
-		TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+//		Texture myTexture = new Texture(Gdx.files.internal("arrow1.png"));
+//		TextureRegion myTextureRegion = new TextureRegion(myTexture);
+//		TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
 		arriba = new TextButton(" N ",skin);
 		abajo = new TextButton(" S ",skin);
 		izq = new TextButton(" E ",skin);
