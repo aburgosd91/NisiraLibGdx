@@ -48,14 +48,14 @@ import javafx.util.Pair;
 public class Streetview  implements Screen,InputProcessor{
 		
 	/*** CAMARA ***/
-	  private Camera camera;
+	  public Camera camera;
 	  private Viewport viewport;
 	/*** MODELOS ***/  
 	  private ModelBatch modelBatch;
 	  private Model pato;
-	  private ModelInstance patoInstance;
+	  public ModelInstance patoInstance;
 	  private Environment environment;
-	  private final Vector3 tmp = new Vector3();
+	  public final Vector3 tmp = new Vector3();
 	  private  AssetManager assets;
 	  ModelCache cache;
 	  private boolean loading;
@@ -396,24 +396,25 @@ public class Streetview  implements Screen,InputProcessor{
                angle += 360;// - (-angle);
            }
    		//CUANDO ESTA LEJOS, REPOSISIONAR.
-   		double distancia = Math.sqrt(Math.pow(position.x-queue_posactual.peek().X*2.5f,2)+Math.pow(position.z-queue_posactual.peek().Y*2.5f,2));
-   		System.out.println("DISTANCIA: "+distancia);
-   		if(distancia>5){
-   			isinvisible=true;
-   			delta*=50;
-   		}else isinvisible = false;
+//   		double distancia = Math.sqrt(Math.pow(position.x-queue_posactual.peek().X*2.5f,2)+Math.pow(position.z-queue_posactual.peek().Y*2.5f,2));
+//   		System.out.println("DISTANCIA: "+distancia);
+//   		if(distancia>5){
+//   			isinvisible=true;
+//   			delta*=50;
+//   		}else isinvisible = false;
+   		//FIN REPOSICION.
    		patoInstance.transform.setToRotation(Vector3.Y,0f);
 	   	patoInstance.transform.translate(position);
 
-		if(position.x != queue_posactual.peek().X*2.5f){
-			if(position.x > queue_posactual.peek().X*2.5f)
+		if(position.x != queue_posactual.peek().X+0.2f){
+			if(position.x > queue_posactual.peek().X+0.2f)
 				patoInstance.transform.translate(-1f*delta, 0f, 0f);
 			else
 				patoInstance.transform.translate(1f*delta, 0f, 0f);
 		}
-		if(position.z != queue_posactual.peek().Y *2.5f){
+		if(position.z != queue_posactual.peek().Y +0.2f){
 			
-			if(position.z > queue_posactual.peek().Y *2.5f)
+			if(position.z > queue_posactual.peek().Y + 0.2f)
 				patoInstance.transform.translate(0f,0f,-1f*delta);
 			else
 				patoInstance.transform.translate(0f,0f,1f*delta);
@@ -581,11 +582,17 @@ public class Streetview  implements Screen,InputProcessor{
 		
 		float deltaX = -Gdx.input.getDeltaX() * 0.5f;
 		//float deltaY = -Gdx.input.getDeltaY() * 0.5f;
-		if(is2D){
+		if(info_pantalla.dimension.equals("3D") && info_pantalla.modo.equals("Manual")){
 			//3D	
-			//camera.direction.rotate(camera.up, deltaX);
-			//tmp.set(camera.direction).crs(camera.up).nor();
-		}else if(!is2D){
+			camera.direction.rotate(camera.up, deltaX);
+			tmp.set(camera.direction).crs(camera.up).nor();
+			float dX = (float)(screenX-dragX)/((float)Gdx.graphics.getWidth()/(camera.position.y / 4));
+			float dY = (float)(dragY-screenY)/((float)Gdx.graphics.getHeight()/(camera.position.y / 4));
+			dragX = screenX;
+			dragY = screenY;
+			camera.position.add(-dX * 30f, 0f, dY * 30f);
+		}
+		if(info_pantalla.dimension.equals("2D") && info_pantalla.modo.equals("Manual")){
 			//2D
 			//tmp.set(camera.direction).crs(camera.up).nor();
 			//camera.direction.rotate(tmp, deltaY);

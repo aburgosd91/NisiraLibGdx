@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,7 +35,7 @@ public class InformacionPantalla {
 	public Label lblmensaje;
 	TextButton btn_auto_manual;
 	TextButton btn_2d_3d;
-	TextButton arriba,abajo,izq,der;
+	public TextButton arriba,abajo,izq,der;
 	
 	public InformacionPantalla(SpriteBatch batch,final Streetview streetview){
 		mensaje="";
@@ -58,8 +59,43 @@ public class InformacionPantalla {
 		/******************LISTENERS*********************/
 		arriba.addListener(new ClickListener(){
 			@Override
-	         public void clicked(InputEvent event, float x, float y) {}
+	         public void clicked(InputEvent event, float x, float y) {
+				streetview.patoInstance.transform.getTranslation(new Vector3());
+				if(dimension.equals("3D"))
+					streetview.tmp.set(streetview.camera.direction).nor().scl(1);
+				else
+					streetview.tmp.set(streetview.camera.up).nor().scl(1);
+				streetview.camera.position.add(streetview.tmp);
+			}
 		});
+		abajo.addListener(new ClickListener(){
+			@Override
+	         public void clicked(InputEvent event, float x, float y) {
+				streetview.patoInstance.transform.getTranslation(new Vector3());
+				if(dimension.equals("3D"))
+					streetview.tmp.set(streetview.camera.direction).nor().scl(-1);
+				else
+				streetview.tmp.set(streetview.camera.up).nor().scl(-1);
+				streetview.camera.position.add(streetview.tmp);
+			}
+		});
+		izq.addListener(new ClickListener(){
+			@Override
+	         public void clicked(InputEvent event, float x, float y) {
+				streetview.patoInstance.transform.getTranslation(new Vector3());
+				streetview.tmp.set(streetview.camera.direction).crs(streetview.camera.up).nor().scl(-1);
+				streetview.camera.position.add(streetview.tmp);
+			}
+		});
+		der.addListener(new ClickListener(){
+			@Override
+	         public void clicked(InputEvent event, float x, float y) {
+				streetview.patoInstance.transform.getTranslation(new Vector3());
+				streetview.tmp.set(streetview.camera.direction).crs(streetview.camera.up).nor().scl(1);
+				streetview.camera.position.add(streetview.tmp);
+			}
+		});
+		
 		
 		btn_2d_3d.addListener(new ClickListener(){
 			@Override
