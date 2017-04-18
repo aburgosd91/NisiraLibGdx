@@ -406,15 +406,15 @@ public class Streetview  implements Screen,InputProcessor{
    		patoInstance.transform.setToRotation(Vector3.Y,0f);
 	   	patoInstance.transform.translate(position);
 
-		if(position.x != queue_posactual.peek().X+0.2f){
-			if(position.x > queue_posactual.peek().X+0.2f)
+		if(position.x != queue_posactual.peek().X*2.5f+0.1f){
+			if(position.x > queue_posactual.peek().X*2.5f+0.1f)
 				patoInstance.transform.translate(-1f*delta, 0f, 0f);
 			else
 				patoInstance.transform.translate(1f*delta, 0f, 0f);
 		}
-		if(position.z != queue_posactual.peek().Y +0.2f){
+		if(position.z != queue_posactual.peek().Y*2.5f +0.1f){
 			
-			if(position.z > queue_posactual.peek().Y + 0.2f)
+			if(position.z > queue_posactual.peek().Y*2.5f + 0.1f)
 				patoInstance.transform.translate(0f,0f,-1f*delta);
 			else
 				patoInstance.transform.translate(0f,0f,1f*delta);
