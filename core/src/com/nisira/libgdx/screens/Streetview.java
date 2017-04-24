@@ -396,12 +396,12 @@ public class Streetview  implements Screen,InputProcessor{
                angle += 360;// - (-angle);
            }
    		//CUANDO ESTA LEJOS, REPOSISIONAR.
-//   		double distancia = Math.sqrt(Math.pow(position.x-queue_posactual.peek().X*2.5f,2)+Math.pow(position.z-queue_posactual.peek().Y*2.5f,2));
-//   		System.out.println("DISTANCIA: "+distancia);
-//   		if(distancia>5){
-//   			isinvisible=true;
-//   			delta*=50;
-//   		}else isinvisible = false;
+   		double distancia = Math.sqrt(Math.pow(position.x-queue_posactual.peek().X*2.5f,2)+Math.pow(position.z-queue_posactual.peek().Y*2.5f,2));
+   		System.out.println("DISTANCIA: "+distancia);
+   		if(distancia>5){
+   			isinvisible=true;
+   			delta*=50;
+   		}else isinvisible = false;
    		//FIN REPOSICION.
    		patoInstance.transform.setToRotation(Vector3.Y,0f);
 	   	patoInstance.transform.translate(position);
